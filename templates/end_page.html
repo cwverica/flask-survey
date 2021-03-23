@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+<h1>Thank you for participating!</h1>
+<br>
+<h2>{{title}}</h2>
+<p>You're responses were:
+    <ol>
+        {% for response in responses %}
+        <li>{{response}}</li>
+        {% endfor %}
+    </ol>
+</p>
+{% endblock %}
