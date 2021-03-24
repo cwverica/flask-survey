@@ -2,3 +2,19 @@
 .hidden {
 	display: none;
 }
+
+.error {
+	background-color: rgb(255, 220, 220);
+	color: rgb(255, 0, 0);
+	font-weight: bold;
+	border: 1px rgb(255, 0, 0) solid;
+	border-radius: 7px;
+}
+
+.warning {
+	background-color: rgb(255, 237, 220);
+	color: rgb(255, 123, 0);
+	font-weight: bold;
+	border: 1px rgb(255, 123, 0) solid;
+	border-radius: 7px;
+}

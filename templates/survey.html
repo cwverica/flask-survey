@@ -5,11 +5,13 @@
 <h1>{{page_dict['title']}}</h1>
 <h3>{{page_dict['instructions']}}</h3>
 
-<!-- {% if page_dict['index'] != page_dict['last']%} -->
+{% for msg in get_flashed_messages() %}
+<p class="error">{{msg}}</p>
+<br>
+{% endfor %}
+
 <form action="/answer" method="POST" class="question-form">
-<!-- {% else %} -->
-<!-- <form action="/survey/end" class="question"> -->
-<!-- {% endif %}  -->
+
     <label for="question">{{page_dict['question']}}</label><br>
     {% for choice in page_dict['choices'] %}
     <input type="radio" class="answer" name="answers" id="{{choice}}" value="{{choice}}">
