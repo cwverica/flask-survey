@@ -9,4 +9,19 @@
 </p>
 
 <a href="/survey/0">The first survey!</a>
+<hr>
+<br>
+<h3>The below is under construction. Wear a hardhat while using!</h3>
+<form action="/start" method="post">
+    <label for="surveys">Choose a survey:</label>
+
+    <select name="surveys" id="survey-list">
+    {% for key in surveys.keys()%}
+    <option value="{{key}}">{{key}}</option>
+    {% endfor %}
+
+</select>
+<input type="submit" value="Submit">
+</form>
+
 {% endblock %}

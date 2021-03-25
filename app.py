@@ -1,5 +1,5 @@
-from surveys import satisfaction_survey
-from flask import Flask, request, render_template, jsonify, redirect, flash
+from surveys import satisfaction_survey, personality_quiz, surveys
+from flask import Flask, request, render_template, jsonify, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -8,25 +8,36 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
 
-responses = []
-survey = satisfaction_survey
+# responses = []
+# survey = satisfaction_survey
 
 
 @app.route('/')
 def show_home():
     # Used this as a way to not have to restart the "server" everytime
-    responses.clear()
-    return render_template('home.html')
+    # responses = []
+    return render_template('home.html', surveys=surveys)
+
+
+@app.route('/start', methods=["POST"])
+def start_survey():
+    session['responses'] = []
+    choice = request.form.get('surveys')
+    global survey 
+    survey = surveys.get(f'{choice}')
+    return redirect('survey/0')
 
 
 @app.route('/survey/<ident>')
 def show_survey(ident):
 
-    if int(ident) != len(responses):
+    if int(ident) != len(session['responses']):
         return courseCorrect()
 
     if request.args.get('answers', None):
+        responses = session['responses']
         responses.append(request.args['answers'])
+        session['responses'] = responses
     
     question_obj = survey.questions[int(ident)]
 
@@ -41,7 +52,15 @@ def show_survey(ident):
 
 @app.route('/answer', methods=["POST"])
 def receive_answer():
-    responses.append(request.form['answers'])
+    responses = session['responses']
+    if request.form.get('comments'):
+        answer = request.form['answers']
+        comments = request.form['comments']
+        responses.append(f'"{answer}", your comments: "{comments}"')
+    else:
+        answer = request.form['answers']
+        responses.append(f'"{answer}"')
+    session['responses'] = responses
     next_page=request.form['ident']
     if int(next_page) == len(survey.questions):
         return redirect('survey/end', code=302)
@@ -51,12 +70,13 @@ def receive_answer():
 @app.route('/survey/end')
 def show_results():
     title = survey.title
-    return render_template('end_page.html', title=title, responses=responses)
+    return render_template('end_page.html', title=title)
 
 def courseCorrect():
-    if len(responses) < len(survey.questions):
+    if len(session['responses']) < len(survey.questions):
         flash("You must answer the questions in order. You have been redirected.")
-        return redirect(f'{len(responses)}', code=302)
+        target = len(session['responses'])
+        return redirect(f'{target}', code=302)
     else:
         flash("You have already completed the survey. You have been redirected.")
         return redirect('end', code=302)

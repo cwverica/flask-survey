@@ -18,6 +18,10 @@
     <label for="answers">{{choice}}</label>
     <br>
     {% endfor %}
+    {% if page_dict['allow_text'] %}
+    <label for="comments"></label>
+    <input type="text" name="comments" id="comments">
+    {% endif %}
     <input type="text" style="display:none;" name="ident" value="{{page_dict['index']+1}}" id="{{page_dict['index']+1}}">
     <input type="submit" value="Submit">
 
